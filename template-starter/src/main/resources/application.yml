@@ -1,0 +1,33 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+spring:
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 400MB
+  datasource:
+    primarydb:
+      jdbc-url: jdbc:mysql://localhost:3306/alice_test?serverTimezone=CTT&useUnicode=true&characterEncoding=utf8
+      driverClassName: com.mysql.cj.jdbc.Driver
+      username: root
+      password: soraSR11
+    seconddb:
+      jdbc-url: jdbc:mysql://localhost:3306/alice_test_two?serverTimezone=CTT&useUnicode=true&characterEncoding=utf8
+      driverClassName: com.mysql.cj.jdbc.Driver
+      username: root
+      password: soraSR11
+
+mybatis:
+  mapper-locations: classpath:*/mapper/**.xml
+
+aly:
+  sms:
+    accessKeyId: LTAI4GBVd6KLrdKFaXDKLykN
+    accessKeySecret: KgyWewMlqtckRVcHJFeeMaQCLjvy48
+aws:
+  sms:
+    accessKeyId: AKIAWNBS6VKJQDQZ4XW5
+    accessKeySecret: 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
+    test: 2444SztshangwuScom
