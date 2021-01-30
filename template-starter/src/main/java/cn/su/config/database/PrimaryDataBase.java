@@ -20,7 +20,7 @@ import javax.sql.DataSource;
  * @Description: 主数据源
  */
 @Configuration
-@MapperScan(basePackages = "cn.sylr.tools.mapper.primarysql", sqlSessionFactoryRef = "primary1SqlSessionFactory")
+@MapperScan(basePackages = "cn.su.dao.mapper.common", sqlSessionFactoryRef = "primary1SqlSessionFactory")
 public class PrimaryDataBase {
     // 将这个对象放入Spring容器中
     @Bean(name = "primary1DataBase")
@@ -45,7 +45,7 @@ public class PrimaryDataBase {
         bean.setDataSource(datasource);
         bean.setMapperLocations(
                 // 设置mybatis的xml所在位置
-                new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/primarysql/*.xml"));
+                new PathMatchingResourcePatternResolver().getResources("classpath*:**/mappers/**/*Mapper.xml"));
         return bean.getObject();
     }
 
