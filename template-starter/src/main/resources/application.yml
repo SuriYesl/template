@@ -19,8 +19,8 @@ spring:
       username: root
       password: soraSR11
 
-mybatis:
-  mapper-locations: classpath:*/mapper/**.xml
+#mybatis:
+#  mapper-locations: classpath:*/mapper/**.xml
 
 aly:
   sms:
