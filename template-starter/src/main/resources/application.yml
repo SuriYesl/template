@@ -19,15 +19,5 @@ spring:
       username: root
       password: soraSR11
 
-mybatis:
-  mapper-locations: classpath:*/mapper/**.xml
-
-aly:
-  sms:
-    accessKeyId: LTAI4GBVd6KLrdKFaXDKLykN
-    accessKeySecret: KgyWewMlqtckRVcHJFeeMaQCLjvy48
-aws:
-  sms:
-    accessKeyId: AKIAWNBS6VKJQDQZ4XW5
-    accessKeySecret: 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
-    test: 2444SztshangwuScom
+#mybatis:
+#  mapper-locations: classpath:*/mapper/**.xml

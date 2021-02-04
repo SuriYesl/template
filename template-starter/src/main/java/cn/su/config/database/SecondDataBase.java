@@ -19,7 +19,7 @@ import javax.sql.DataSource;
  * @Description: 次数据源
  */
 @Configuration
-@MapperScan(basePackages = "cn.sylr.tools.mapper.secondsql", sqlSessionFactoryRef = "second1SqlSessionFactory")
+@MapperScan(basePackages = "cn.su.dao.mapper.common", sqlSessionFactoryRef = "second1SqlSessionFactory")
 public class SecondDataBase {
     @Bean(name = "second1DataSource")
     @ConfigurationProperties(prefix = "spring.datasource.second")
@@ -35,7 +35,7 @@ public class SecondDataBase {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(datasource);
         bean.setMapperLocations(
-                new PathMatchingResourcePatternResolver().getResources("classpath*:mapping/secondsql/*.xml"));
+                new PathMatchingResourcePatternResolver().getResources("classpath*:**/mappers/**/*Mapper.xml"));
         return bean.getObject();
     }
 
