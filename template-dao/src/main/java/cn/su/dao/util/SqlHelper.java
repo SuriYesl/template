@@ -10,7 +10,6 @@ import cn.su.dao.entity.BaseBo;
 import cn.su.dao.mapper.common.SqlCommonMapper;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.transaction.annotation.Transactional;
-import sun.plugin2.util.SystemUtil;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
@@ -82,7 +81,7 @@ public class SqlHelper<T> implements SqlInterface {
     public SqlInterface count() {
         String tableName = SqlSpellUtil.getClassTableName(this.clazz);
         select();
-        sqlSpell.append(SqlConstants.COUNT);
+        sqlSpell.append(SqlConstants.COUNT_FUNCTION);
         from();
         sqlSpell.append(tableName).append(SqlConstants.SPACE);
         return this;
