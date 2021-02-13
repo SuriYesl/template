@@ -1,5 +1,7 @@
 package cn.su.core.util;
 
+import cn.su.core.constants.MathConstants;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,5 +67,14 @@ public class StringUtil {
         }
         matcher.appendTail(sb);
         return sb.toString();
+    }
+
+    public static String stripNotSpaceHeadAndTail(String string) {
+        string = string.trim();
+        if (string.length() <= MathConstants.TWO) {
+            return "";
+        }
+        string = string.substring(MathConstants.ONE, string.length() - MathConstants.ONE);
+        return string;
     }
 }

@@ -6,24 +6,32 @@ import cn.su.core.exception.BusinessException;
 import cn.su.core.util.NormHandleUtil;
 import cn.su.core.util.SpringContextUtil;
 import cn.su.core.util.StringUtil;
-import cn.su.dao.mapper.common.SqlMapper;
+import cn.su.dao.entity.BaseBo;
+import cn.su.dao.mapper.common.SqlCommonMapper;
 import org.apache.ibatis.exceptions.TooManyResultsException;
+import org.springframework.transaction.annotation.Transactional;
+import sun.plugin2.util.SystemUtil;
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * @AUTHOR: sr
- * @DATE: Create In 22:48 2021/1/27 0027
- * @DESCRIPTION: sql工具
+ * @Author: su rui
+ * @Date: 2021/1/28 09:44
+ * @Description: sql
  */
 public class SqlHelper<T> implements SqlInterface {
-    private Class<T> clazz;
+    private static final String UPDATE_TIME = "update_time";
+    private static final String VALUE = "value";
+    private final Class<T> clazz;
     private StringBuilder sqlSpell = new StringBuilder();
-    private StringBuilder searchFields = new StringBuilder();
-    private static final SqlMapper sqlMapper = SpringContextUtil.getBean(SqlMapper.class);
+    private StringBuilder searchValues = new StringBuilder();
+    private static final SqlCommonMapper commonMapper = SpringContextUtil.getBean(SqlCommonMapper.class);
 
     public SqlHelper(Class<T> clazz) {
         this.clazz = clazz;
@@ -33,26 +41,29 @@ public class SqlHelper<T> implements SqlInterface {
     }
 
     private Map<String, String> getFieldMap() {
-        List<String> fieldStrings = SqlSpellUtil.getClassFields(clazz);
+        List<String> fieldStrings = SqlSpellUtil.getClassFields(this.clazz);
         if (NormHandleUtil.isEmpty(fieldStrings)) {
-            throw new BusinessException("search for null");
+            throw new BusinessException("value for selecting is empty");
         }
-        Map<String, String> fieldMap = fieldStrings.parallelStream()
+        return fieldStrings.parallelStream()
                 .collect(Collectors.toMap(fieldString -> fieldString, fieldString -> StringUtil.humpToLine(fieldString)));
-        return fieldMap;
     }
 
     private String getSearchValues(Map<String, String> fieldMap) {
         for (Map.Entry<String, String> field : fieldMap.entrySet()) {
-            searchFields.append(field.getValue())
+            searchValues.append(SqlConstants.FLOAT_POINT)
+                    .append(field.getValue())
+                    .append(SqlConstants.FLOAT_POINT)
                     .append(SqlConstants.SPACE)
                     .append(SqlConstants.AS)
                     .append(SqlConstants.SPACE)
+                    .append(SqlConstants.FLOAT_POINT)
                     .append(field.getKey())
+                    .append(SqlConstants.FLOAT_POINT)
                     .append(SqlConstants.COMMA);
         }
-        searchFields.deleteCharAt(searchFields.length() - MathConstants.ONE);
-        return searchFields.toString();
+        searchValues.deleteCharAt(searchValues.length() - MathConstants.ONE);
+        return searchValues.toString();
     }
 
     @Override
@@ -62,6 +73,16 @@ public class SqlHelper<T> implements SqlInterface {
         String searchValues = getSearchValues(fieldMap);
         select();
         sqlSpell.append(searchValues).append(SqlConstants.SPACE);
+        from();
+        sqlSpell.append(tableName).append(SqlConstants.SPACE);
+        return this;
+    }
+
+    @Override
+    public SqlInterface count() {
+        String tableName = SqlSpellUtil.getClassTableName(this.clazz);
+        select();
+        sqlSpell.append(SqlConstants.COUNT);
         from();
         sqlSpell.append(tableName).append(SqlConstants.SPACE);
         return this;
@@ -86,6 +107,90 @@ public class SqlHelper<T> implements SqlInterface {
     }
 
     @Override
+    public SqlInterface eq(String field, String value) {
+        sqlSpell.append(SqlConstants.FLOAT_POINT)
+                .append(field)
+                .append(SqlConstants.FLOAT_POINT)
+                .append(SqlConstants.SPACE)
+                .append(SqlConstants.EQUAL_SIGN)
+                .append(SqlConstants.SPACE)
+                .append(SqlConstants.SINGLE_QUOTED)
+                .append(value)
+                .append(SqlConstants.SINGLE_QUOTED);
+        return this;
+    }
+
+    @Override
+    public SqlInterface neq(String field, String value) {
+        sqlSpell.append(SqlConstants.FLOAT_POINT)
+                .append(field)
+                .append(SqlConstants.FLOAT_POINT)
+                .append(SqlConstants.SPACE)
+                .append(SqlConstants.NOT_EQUAL_SIGN)
+                .append(SqlConstants.SPACE)
+                .append(SqlConstants.SINGLE_QUOTED)
+                .append(value)
+                .append(SqlConstants.SINGLE_QUOTED);
+        return this;
+    }
+
+    @Override
+    public SqlInterface lt(String field, String value) {
+        sqlSpell.append(SqlConstants.FLOAT_POINT)
+                .append(field)
+                .append(SqlConstants.FLOAT_POINT)
+                .append(SqlConstants.SPACE)
+                .append(SqlConstants.LESS_THAN)
+                .append(SqlConstants.SPACE)
+                .append(SqlConstants.SINGLE_QUOTED)
+                .append(value)
+                .append(SqlConstants.SINGLE_QUOTED);
+        return this;
+    }
+
+    @Override
+    public SqlInterface gt(String field, String value) {
+        sqlSpell.append(SqlConstants.FLOAT_POINT)
+                .append(field)
+                .append(SqlConstants.FLOAT_POINT)
+                .append(SqlConstants.SPACE)
+                .append(SqlConstants.GREATER_THAN)
+                .append(SqlConstants.SPACE)
+                .append(SqlConstants.SINGLE_QUOTED)
+                .append(value)
+                .append(SqlConstants.SINGLE_QUOTED);
+        return this;
+    }
+
+    @Override
+    public SqlInterface ltAndEqual(String field, String value) {
+        sqlSpell.append(SqlConstants.FLOAT_POINT)
+                .append(field)
+                .append(SqlConstants.FLOAT_POINT)
+                .append(SqlConstants.SPACE)
+                .append(SqlConstants.LESS_THAN_AND_EQUAL)
+                .append(SqlConstants.SPACE)
+                .append(SqlConstants.SINGLE_QUOTED)
+                .append(value)
+                .append(SqlConstants.SINGLE_QUOTED);
+        return this;
+    }
+
+    @Override
+    public SqlInterface gtAndEqual(String field, String value) {
+        sqlSpell.append(SqlConstants.FLOAT_POINT)
+                .append(field)
+                .append(SqlConstants.FLOAT_POINT)
+                .append(SqlConstants.SPACE)
+                .append(SqlConstants.GREATER_THAN_AND_EQUAL)
+                .append(SqlConstants.SPACE)
+                .append(SqlConstants.SINGLE_QUOTED)
+                .append(value)
+                .append(SqlConstants.SINGLE_QUOTED);
+        return this;
+    }
+
+    @Override
     public SqlInterface and() {
         sqlSpell.append(SqlConstants.AND + SqlConstants.SPACE);
         return this;
@@ -97,21 +202,37 @@ public class SqlHelper<T> implements SqlInterface {
         return this;
     }
 
+    private String getDynamicFieldString(String... fields) {
+        StringBuilder fieldSb = new StringBuilder();
+        for (String field : fields) {
+            fieldSb.append(field).append(", ");
+        }
+
+        if (fieldSb.length() > 0) {
+            fieldSb.delete(fieldSb.length() - MathConstants.ONE, fieldSb.length());
+        }
+        return fieldSb.toString();
+    }
+
     @Override
-    public SqlInterface orderBy() {
-        sqlSpell.append(SqlConstants.ORDER_BY + SqlConstants.SPACE);
+    public SqlInterface orderBy(String... fields) {
+        sqlSpell.append(SqlConstants.ORDER_BY + SqlConstants.SPACE).append(getDynamicFieldString(fields));
         return this;
     }
 
     @Override
-    public SqlInterface groupBy() {
-        sqlSpell.append(SqlConstants.GROUP_BY + SqlConstants.SPACE);
+    public SqlInterface groupBy(String... fields) {
+        sqlSpell.append(SqlConstants.GROUP_BY + SqlConstants.SPACE).append(getDynamicFieldString(fields));
         return this;
     }
 
     @Override
-    public SqlInterface limit() {
-        sqlSpell.append(SqlConstants.LIMIT + SqlConstants.SPACE);
+    public SqlInterface limit(Integer startRow, Integer size) {
+        sqlSpell.append(SqlConstants.LIMIT + SqlConstants.SPACE)
+                .append(null == startRow ? 0 : startRow)
+                .append(SqlConstants.COMMA)
+                .append(SqlConstants.SPACE)
+                .append(null == size ? Integer.MAX_VALUE : size);
         return this;
     }
 
@@ -128,24 +249,86 @@ public class SqlHelper<T> implements SqlInterface {
     }
 
     @Override
-    public <T> T forOneResult() {
-        List<Map<String, Object>> list = sqlMapper.search(sqlSpell.toString());
-        if (NormHandleUtil.isEmpty(list)) {
-            return null;
+    public SqlInterface underLine() {
+        sqlSpell.append(SqlConstants.UNDER_LINE);
+        return this;
+    }
+
+    @Override
+    public SqlInterface comma() {
+        sqlSpell.append(SqlConstants.COMMA);
+        return this;
+    }
+
+    @Override
+    public SqlInterface floatPoint() {
+        sqlSpell.append(SqlConstants.FLOAT_POINT);
+        return this;
+    }
+
+    @Override
+    public <T extends BaseBo> void update(T data) {
+        if (!sqlSpell.toString().contains(SqlConstants.WHERE)) {
+            throw new BusinessException("no condition for update, it is not allowed");
         }
-        if(list.size() > MathConstants.ONE){
-            throw new TooManyResultsException("search for one result but found" + list.size());
+        String tableName = SqlSpellUtil.getClassTableName(this.clazz);
+        Field[] fields = SqlSpellUtil.getClassFieldArray(this.clazz);
+        StringBuilder column = new StringBuilder();
+        Map<String, Object> updateParam = new LinkedHashMap<>();
+        try {
+            for (Field field : fields) {
+                field.setAccessible(true);
+                if (!SqlConstants.SERIAL_VERSION_UID.equals(field.getName())) {
+                    Object object = field.get(data);
+                    String columnName = StringUtil.humpToLine(field.getName());
+                    if (object == null) {
+                        if (UPDATE_TIME.equals(columnName)) {
+                            object = LocalDateTime.now();
+                        }
+                    }
+                    columnName = SqlConstants.FLOAT_POINT + columnName + SqlConstants.FLOAT_POINT;
+                    column.append(columnName).append(" = ").append("#{").append(columnName).append("},");
+                    updateParam.put(columnName, object);
+                }
+            }
+        } catch (Exception e) {
+            if (e instanceof BusinessException) {
+                throw (BusinessException) e;
+            }
+            throw new BusinessException("DaoHelper, method update exception:", e);
         }
+
+        column.replace(column.length() - 1, column.length(), "");
+        column.append(SqlConstants.SPACE).append(sqlSpell.toString());
+
+        String sql = "update " + tableName + " set " + column;
+        updateParam.put(VALUE, sql);
+        try {
+            Integer updateFlag = commonMapper.superCommonUpdate(updateParam);
+            if (updateFlag != 1) {
+                throw new BusinessException("The network is busy, please refresh the page");
+            }
+        } catch (Exception e) {
+            if (e instanceof BusinessException) {
+                throw (BusinessException) e;
+            } else {
+                throw new BusinessException("DaoHelper, method update exception:", e);
+            }
+        }
+    }
+
+    private <T> T getObjectByMap(Map<String, Object> oneResultMap) {
         T objectBo;
         try {
             objectBo = (T) this.clazz.newInstance();
             Field[] fields = SqlSpellUtil.getClassFieldArray(this.clazz);
             for (Field field : fields) {
+                field.setAccessible(true);
                 if (!SqlConstants.SERIAL_VERSION_UID.equals(field.getName())) {
-                    if (list.get(0).containsKey(field.getName())) {
-                        field.set(objectBo, list.get(0).get(field.getName()));
-                    } else if (list.get(0).containsKey(StringUtil.humpToLine(field.getName()))){
-                        field.set(objectBo, list.get(0).get(StringUtil.humpToLine(field.getName())));
+                    if (oneResultMap.containsKey(field.getName())) {
+                        field.set(objectBo, oneResultMap.get(field.getName()));
+                    } else if (oneResultMap.containsKey(StringUtil.humpToLine(field.getName()))){
+                        field.set(objectBo, oneResultMap.get(StringUtil.humpToLine(field.getName())));
                     }
                 }
             }
@@ -156,42 +339,69 @@ public class SqlHelper<T> implements SqlInterface {
     }
 
     @Override
-    public <T> List<T> forResultList() {
-        return null;
+    public <T extends BaseBo> T forOneResult() {
+        List<Map<String, Object>> list = commonMapper.getTargetBySql(sqlSpell.toString());
+        if (NormHandleUtil.isEmpty(list)) {
+            return null;
+        }
+        if(list.size() > MathConstants.ONE){
+            throw new TooManyResultsException("search for one result but found" + list.size());
+        }
+        return getObjectByMap(list.get(0));
     }
 
     @Override
-    public Integer forCount() {
-        return null;
+    public List<T> forResultList() {
+        List<Map<String, Object>> list = commonMapper.getTargetBySql(sqlSpell.toString());
+        List<T> boList = new LinkedList<>();
+        if (!NormHandleUtil.isEmpty(list)) {
+            try {
+                for (Map<String, Object> map : list) {
+                    T objectBo = getObjectByMap(map);
+                    boList.add(objectBo);
+                }
+            } catch (Exception e) {
+                throw new BusinessException("DaoHelper, method queryForList exception:", e);
+            }
+        }
+        return boList;
     }
 
-    @Override
-    public SqlInterface underLine() {
-        return this;
+    private void fillInsertFieldAndValues(Map<String, String> fieldMap, List<String> insertFields, List<String> fieldValues) {
+        for (Map.Entry<String, String> field : fieldMap.entrySet()) {
+            insertFields.add(SqlConstants.FLOAT_POINT + field.getValue() + SqlConstants.FLOAT_POINT);
+            fieldValues.add(SqlConstants.HASH + SqlConstants.LEFT_BRACE + SqlConstants.ITEM_POINT + field.getKey() + SqlConstants.RIGHT_BRACE);
+        }
     }
 
-    @Override
-    public SqlInterface comma() {
-        return this;
+    private void doInsert(List<T> dataList) {
+        String tableName = SqlSpellUtil.getClassTableName(this.clazz);
+        Map<String, String> fieldMap = SqlSpellUtil.getClassFields(this.clazz).parallelStream().collect(
+                Collectors.toMap(field -> field, StringUtil::humpToLine));
+        List<String> insertFields = new LinkedList<>();
+        List<String> fieldValues = new LinkedList<>();
+        fillInsertFieldAndValues(fieldMap, insertFields, fieldValues);
+        String insertFieldString = StringUtil.stripNotSpaceHeadAndTail(insertFields.toString());
+        String fieldValueString = StringUtil.stripNotSpaceHeadAndTail(fieldValues.toString());
+        System.out.println("INSERT INTO " + tableName + " (" + insertFieldString + ")" + " VALUES" + "(" + fieldValueString + ")");
+        commonMapper.insertTargetListBySql(tableName, insertFieldString, fieldValueString, dataList);
     }
 
-    @Override
-    public SqlInterface floatPoint() {
-        return this;
+    public T insert(T data) {
+        if (null == data) {
+            throw new BusinessException("data is null");
+        }
+        List<T> dataList = new LinkedList<>();
+        dataList.add(data);
+        doInsert(dataList);
+        return data;
     }
 
-    @Override
-    public SqlInterface space() {
-        return this;
-    }
-
-    @Override
-    public SqlInterface semicolon() {
-        return this;
-    }
-
-    @Override
-    public SqlInterface asterisk() {
-        return this;
+    @Transactional(rollbackFor = Exception.class)
+    public void insertBatch(List<T> dataList) {
+        if (NormHandleUtil.isEmpty(dataList)) {
+            throw new BusinessException("insert data list is empty");
+        }
+        doInsert(dataList);
     }
 }

@@ -51,10 +51,10 @@ public class SqlSpellUtil {
             if (SqlConstants.SERIAL_VERSION_UID.equals(field.getName())) {
                 continue;
             }
-            field.setAccessible(true);
             fieldStr.add(field.getName());
         }
         classFieldStrMap.put(clazz.getName(), fieldStr);
+        System.out.println("no cache for this class fields: " + clazz.getName());
         return fieldStr;
     }
 
