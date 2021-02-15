@@ -6,7 +6,7 @@ import cn.su.core.exception.BusinessException;
 import cn.su.core.util.NormHandleUtil;
 import cn.su.core.util.SpringContextUtil;
 import cn.su.core.util.StringUtil;
-import cn.su.dao.entity.BaseBo;
+import cn.su.dao.entity.common.BaseBo;
 import cn.su.dao.mapper.common.SqlCommonMapper;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.transaction.annotation.Transactional;
@@ -339,31 +339,33 @@ public class SqlHelper<T> implements SqlInterface {
 
     @Override
     public <T extends BaseBo> T forOneResult() {
-        List<Map<String, Object>> list = commonMapper.getTargetBySql(sqlSpell.toString());
-        if (NormHandleUtil.isEmpty(list)) {
-            return null;
-        }
-        if(list.size() > MathConstants.ONE){
-            throw new TooManyResultsException("search for one result but found" + list.size());
-        }
-        return getObjectByMap(list.get(0));
+        //List<Map<String, Object>> list = commonMapper.getTargetBySql(sqlSpell.toString());
+        //if (NormHandleUtil.isEmpty(list)) {
+        //    return null;
+        //}
+        //if(list.size() > MathConstants.ONE){
+        //    throw new TooManyResultsException("search for one result but found" + list.size());
+        //}
+        //return getObjectByMap(list.get(0));
+        return null;
     }
 
     @Override
     public List<T> forResultList() {
-        List<Map<String, Object>> list = commonMapper.getTargetBySql(sqlSpell.toString());
-        List<T> boList = new LinkedList<>();
-        if (!NormHandleUtil.isEmpty(list)) {
-            try {
-                for (Map<String, Object> map : list) {
-                    T objectBo = getObjectByMap(map);
-                    boList.add(objectBo);
-                }
-            } catch (Exception e) {
-                throw new BusinessException("DaoHelper, method queryForList exception:", e);
-            }
-        }
-        return boList;
+        //List<Map<String, Object>> list = commonMapper.getTargetBySql(sqlSpell.toString());
+        //List<T> boList = new LinkedList<>();
+        //if (!NormHandleUtil.isEmpty(list)) {
+        //    try {
+        //        for (Map<String, Object> map : list) {
+        //            T objectBo = getObjectByMap(map);
+        //            boList.add(objectBo);
+        //        }
+        //    } catch (Exception e) {
+        //        throw new BusinessException("DaoHelper, method queryForList exception:", e);
+        //    }
+        //}
+        //return boList;
+        return null;
     }
 
     private void fillInsertFieldAndValues(Map<String, String> fieldMap, List<String> insertFields, List<String> fieldValues) {

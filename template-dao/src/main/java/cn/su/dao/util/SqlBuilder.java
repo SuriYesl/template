@@ -1,5 +1,6 @@
 package cn.su.dao.util;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -7,85 +8,37 @@ import java.util.Map;
  * @DATE: Create In 13:37 2021/2/13 0013
  * @DESCRIPTION: sql语句构建类
  */
-public class SqlBuilder implements SqlBuilderInterface{
-    private String primaryTable;
-    private Map<String, String> tableConnectionTypeMaps;
-    private Map<String, String> tableOnConditionMaps;
-    private StringBuilder searchFields;
-    private StringBuilder insertFields;
-    private StringBuilder updateFields;
-    private StringBuilder whereCondition;
-    private StringBuilder orderCondition;
-    private StringBuilder limitCondition;
-    private StringBuilder groupCondition;
+public class SqlBuilder {
+    public String primaryTable;
+    public Map<String, String> tableConnectionTypeMaps;
+    public Map<String, String> tableOnConditionMaps;
+    public StringBuilder searchFields;
+    public StringBuilder insertFields;
+    public StringBuilder updateFields;
+    public StringBuilder whereCondition;
+    public StringBuilder orderCondition;
+    public StringBuilder limitCondition;
+    public StringBuilder groupCondition;
 
-    public String getPrimaryTable() {
-        return primaryTable;
+    private void defaultInit() {
+        primaryTable = "";
+        tableConnectionTypeMaps = new HashMap<>();
+        tableOnConditionMaps = new HashMap<>();
+        searchFields = new StringBuilder();
+        insertFields = new StringBuilder();
+        updateFields = new StringBuilder();
+        whereCondition = new StringBuilder();
+        orderCondition = new StringBuilder();
+        limitCondition = new StringBuilder();
+        groupCondition = new StringBuilder();
     }
 
-    public Map<String, String> getTableConnectionTypeMaps() {
-        return tableConnectionTypeMaps;
+    public SqlBuilder() {
+        defaultInit();
     }
 
-    public Map<String, String> getTableOnConditionMaps() {
-        return tableOnConditionMaps;
-    }
-
-    public StringBuilder getSearchFields() {
-        return searchFields;
-    }
-
-    public StringBuilder getInsertFields() {
-        return insertFields;
-    }
-
-    public StringBuilder getUpdateFields() {
-        return updateFields;
-    }
-
-    public StringBuilder getWhereCondition() {
-        return whereCondition;
-    }
-
-    public StringBuilder getOrderCondition() {
-        return orderCondition;
-    }
-
-    public StringBuilder getLimitCondition() {
-        return limitCondition;
-    }
-
-    public StringBuilder getGroupCondition() {
-        return groupCondition;
-    }
-
-    @Override
-    public SqlBuilderInterface buildSqlFunction() {
-        return this;
-    }
-
-    @Override
-    public SqlBuilderInterface buildPrimaryTableName() {
-        return this;
-    }
-
-    @Override
-    public SqlBuilderInterface buildWhereCondition() {
-        return this;
-    }
-
-    @Override
-    public SqlBuilderInterface buildConnectionType() {
-        return this;
-    }
-
-    @Override
-    public SqlBuilderInterface buildRelationTableName() {
-        return this;
-    }
-
-    @Override
-    public SqlBuilderInterface buildOnCondition() {
-        return this;
+    public SqlBuilder(String tableName) {
+        defaultInit();
+        primaryTable = tableName;
     }
 }

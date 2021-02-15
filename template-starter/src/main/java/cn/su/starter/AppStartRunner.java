@@ -2,7 +2,7 @@ package cn.su.starter;
 
 import cn.su.core.exception.BusinessException;
 import cn.su.core.util.SystemUtil;
-import cn.su.dao.entity.BaseBo;
+import cn.su.dao.entity.common.BaseBo;
 import cn.su.dao.util.SqlSpellUtil;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
@@ -38,7 +38,7 @@ public class AppStartRunner implements ApplicationRunner {
     }
 
     private void initBoClassField() {
-        logger.info("======================start to cache bo class fields======================");
+        logger.info("======================start to cache class fields======================");
         long startTime = System.currentTimeMillis();
         Reflections reflections = new Reflections(new ConfigurationBuilder()
                 .forPackages("cn.su.dao.entity")
@@ -53,6 +53,6 @@ public class AppStartRunner implements ApplicationRunner {
             e.printStackTrace();
             throw new BusinessException(e);
         }
-        logger.info("======================cache bo class fields end, use time: " + (System.currentTimeMillis() - startTime) + "ms======================");
+        logger.info("======================cache class fields end, use time: " + (System.currentTimeMillis() - startTime) + "ms======================");
     }
 }
