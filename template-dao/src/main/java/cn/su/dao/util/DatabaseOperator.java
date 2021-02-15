@@ -41,7 +41,7 @@ public class DatabaseOperator<E> implements AutoSqlInterface<E> {
         resultClass = clazz;
         sqlBuilder = new SqlBuilder(SqlBuildHelper.getClassTableName(clazz));
         sqlExecuteInterface = new SqlExecute();
-        resultHandlerInterface = new ResultHandler<E>();
+        resultHandlerInterface = new ResultHandler<>();
     }
 
     @Override
