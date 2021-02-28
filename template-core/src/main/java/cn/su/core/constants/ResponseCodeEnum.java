@@ -7,7 +7,12 @@ package cn.su.core.constants;
  */
 public enum ResponseCodeEnum {
     SUCCESS("0000", "success"),
-    BUSINESS_EXCEPTION("5000", "error");
+    BUSINESS_EXCEPTION("5000", "error"),
+    LOGIN_FAIL("5000", "login fail"),
+    LOGIN_FAIL_VERIFY("5000", "验证不通过"),
+    LOGIN_FAIL_NO_ACCOUNT("5000", "不存在该账号，请确认账号密码是否正确"),
+    LOGIN_FAIL_INVALID("5000", "账号异常，请确认账号状态是否正常"),
+    SERVER_EXCEPTION("5001", "服务器繁忙，请稍后重试");
 
     private String code;
     private String message;
