@@ -7,6 +7,7 @@
 //import cn.su.dao.util.SqlExecute;
 //import cn.su.dao.util.SqlExecuteInterface;
 //import org.apache.ibatis.exceptions.TooManyResultsException;
+//import org.apache.poi.ss.formula.functions.T;
 //
 //import java.util.LinkedList;
 //import java.util.List;
@@ -18,7 +19,7 @@
 // * @DESCRIPTION: 操作类
 // */
 //public class DatabaseOperator<E> implements AutoSqlInterface<E> {
-//    private final Class parameterClass;
+//    private final T parameterObject;
 //    private final Class<E> resultClass;
 //    private final SqlBuilder sqlBuilder;
 //    private final SqlExecuteInterface<E> sqlExecuteInterface;
@@ -45,7 +46,7 @@
 //        resultHandlerInterface = new ResultHandler<>();
 //    }
 //
-//    public DatabaseOperator(Class parameterClass, Class resultClass, String tableName) {
+//    public DatabaseOperator(T, Class resultClass, String tableName) {
 //        this.parameterClass = parameterClass;
 //        this.resultClass = resultClass;
 //        sqlBuilder = new SqlBuilder(tableName);
