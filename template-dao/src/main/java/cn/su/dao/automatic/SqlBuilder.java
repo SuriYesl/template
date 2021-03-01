@@ -11,6 +11,9 @@ import java.util.Map;
 public class SqlBuilder {
     public String tableName;
     public StringBuilder sql;
+    public StringBuilder queryingFieldBuilder;
+    public StringBuilder insertFieldBuilder;
+    public StringBuilder updateFieldBuilder;
     public Map<String, Object> filedAndValueMap;
     public Map<String, Integer> filedCountMap;
 
