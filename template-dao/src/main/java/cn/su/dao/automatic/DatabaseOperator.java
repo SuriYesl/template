@@ -1,7 +1,9 @@
 package cn.su.dao.automatic;
 
 import cn.su.core.constants.MathConstants;
+import cn.su.core.constants.SqlConstants;
 import cn.su.core.util.NormHandleUtil;
+import cn.su.core.util.StringUtil;
 import cn.su.dao.util.ResultHandlerInterface;
 import cn.su.dao.util.SqlExecute;
 import cn.su.dao.util.SqlExecuteInterface;
@@ -16,14 +18,15 @@ import java.util.Map;
  * @DATE: Create In 23:23 2021/2/13 0013
  * @DESCRIPTION: 操作类
  */
-public class DatabaseOperator<T, E> implements AutoSqlInterface<E> {
+public class DatabaseOperator<T, E> implements AutoSqlInterface<T, E> {
     private final T parameterObject;
     private final Class<E> resultClass;
     private final SqlBuilder sqlBuilder;
     private final SqlExecuteInterface<E> sqlExecuteInterface;
     private final ResultHandlerInterface<E> resultHandlerInterface;
+    private boolean humpToLine;
 
-    public StringBuilder getSql() {
+    public String getSql() {
         return sqlBuilder.sql;
     }
 
@@ -41,108 +44,186 @@ public class DatabaseOperator<T, E> implements AutoSqlInterface<E> {
         sqlBuilder = new SqlBuilder(tableName);
         sqlExecuteInterface = new SqlExecute();
         resultHandlerInterface = new ResultHandler<>();
+        humpToLine = false;
     }
 
 
     @Override
-    public void fieldToQuerying(String fields) {
-
+    public AutoSqlInterface fieldToQuerying(String fields) {
+        sqlBuilder.queryingFieldBuilder.append(fields);
+        return this;
     }
 
     @Override
-    public void fieldToQuerying(List<String> fields) {
-
+    public AutoSqlInterface fieldToQuerying(List<String> fields) {
+        for (String field : fields) {
+            field = humpToLine ? StringUtil.humpToLine(field) : field;
+            sqlBuilder.queryingFieldBuilder.append(SqlConstants.FLOAT_POINT)
+                    .append(field).append(SqlConstants.FLOAT_POINT).append(SqlConstants.COMMA);
+        }
+        sqlBuilder.queryingFieldBuilder.delete(sqlBuilder.queryingFieldBuilder.length(), sqlBuilder.queryingFieldBuilder.length());
+        return this;
     }
 
     @Override
-    public void fieldToQuerying(Map<String, String> fieldMap) {
-
+    public AutoSqlInterface fieldToQuerying(Map<String, String> fieldMap) {
+        for (Map.Entry<String, String> field : fieldMap.entrySet()) {
+            sqlBuilder.queryingFieldBuilder.append(SqlConstants.FLOAT_POINT).append(field.getValue()).append(SqlConstants.FLOAT_POINT)
+                    .append(SqlConstants.SPACE).append(SqlConstants.AS).append(SqlConstants.SPACE)
+                    .append(SqlConstants.FLOAT_POINT).append(field.getKey()).append(SqlConstants.FLOAT_POINT)
+                    .append(SqlConstants.COMMA);
+        }
+        sqlBuilder.queryingFieldBuilder.delete(sqlBuilder.queryingFieldBuilder.length(), sqlBuilder.queryingFieldBuilder.length());
+        return this;
     }
 
     @Override
-    public void condition(String conditions) {
-
+    public AutoSqlInterface condition(String conditions) {
+        sqlBuilder.whereBuilder.append(conditions);
+        return this;
     }
 
     @Override
     public AutoSqlInterface eq(String field, Object value) {
-        return null;
+        String fieldValue = sqlBuilder.valueField(field, value);
+        if (!sqlBuilder.endWithAndOr()) sqlBuilder.queryingFieldBuilder.append(SqlConstants.AND);
+        sqlBuilder.queryingFieldBuilder.append(SqlConstants.FLOAT_POINT).append(field).append(SqlConstants.FLOAT_POINT)
+                .append(SqlConstants.SPACE).append(SqlConstants.EQUAL_SIGN).append(SqlConstants.SPACE)
+                .append(SqlConstants.HASH).append(SqlConstants.LEFT_BRACE).append(fieldValue).append(SqlConstants.RIGHT_BRACE)
+                .append(SqlConstants.COMMA);
+        return this;
     }
 
     @Override
     public AutoSqlInterface neq(String field, Object value) {
-        return null;
+        String fieldValue = sqlBuilder.valueField(field, value);
+        if (!sqlBuilder.endWithAndOr()) sqlBuilder.queryingFieldBuilder.append(SqlConstants.AND);
+        sqlBuilder.queryingFieldBuilder.append(SqlConstants.FLOAT_POINT).append(field).append(SqlConstants.FLOAT_POINT)
+                .append(SqlConstants.SPACE).append(SqlConstants.NOT_EQUAL_SIGN).append(SqlConstants.SPACE)
+                .append(SqlConstants.HASH).append(SqlConstants.LEFT_BRACE).append(fieldValue).append(SqlConstants.RIGHT_BRACE)
+                .append(SqlConstants.COMMA);
+        return this;
     }
 
     @Override
     public AutoSqlInterface lt(String field, Object value) {
-        return null;
+        String fieldValue = sqlBuilder.valueField(field, value);
+        if (!sqlBuilder.endWithAndOr()) sqlBuilder.queryingFieldBuilder.append(SqlConstants.AND);
+        sqlBuilder.queryingFieldBuilder.append(SqlConstants.FLOAT_POINT).append(field).append(SqlConstants.FLOAT_POINT)
+                .append(SqlConstants.SPACE).append(SqlConstants.LESS_THAN).append(SqlConstants.SPACE)
+                .append(SqlConstants.HASH).append(SqlConstants.LEFT_BRACE).append(fieldValue).append(SqlConstants.RIGHT_BRACE)
+                .append(SqlConstants.COMMA);
+        return this;
     }
 
     @Override
     public AutoSqlInterface gt(String field, Object value) {
-        return null;
+        String fieldValue = sqlBuilder.valueField(field, value);
+        if (!sqlBuilder.endWithAndOr()) sqlBuilder.queryingFieldBuilder.append(SqlConstants.AND);
+        sqlBuilder.queryingFieldBuilder.append(SqlConstants.FLOAT_POINT).append(field).append(SqlConstants.FLOAT_POINT)
+                .append(SqlConstants.SPACE).append(SqlConstants.GREATER_THAN).append(SqlConstants.SPACE)
+                .append(SqlConstants.HASH).append(SqlConstants.LEFT_BRACE).append(fieldValue).append(SqlConstants.RIGHT_BRACE)
+                .append(SqlConstants.COMMA);
+        return this;
     }
 
     @Override
     public AutoSqlInterface ltAndEqual(String field, Object value) {
-        return null;
+        String fieldValue = sqlBuilder.valueField(field, value);
+        if (!sqlBuilder.endWithAndOr()) sqlBuilder.queryingFieldBuilder.append(SqlConstants.AND);
+        sqlBuilder.queryingFieldBuilder.append(SqlConstants.FLOAT_POINT).append(field).append(SqlConstants.FLOAT_POINT)
+                .append(SqlConstants.SPACE).append(SqlConstants.LESS_THAN_AND_EQUAL).append(SqlConstants.SPACE)
+                .append(SqlConstants.HASH).append(SqlConstants.LEFT_BRACE).append(fieldValue).append(SqlConstants.RIGHT_BRACE)
+                .append(SqlConstants.COMMA);
+        return this;
     }
 
     @Override
     public AutoSqlInterface gtAndEqual(String field, Object value) {
-        return null;
+        String fieldValue = sqlBuilder.valueField(field, value);
+        if (!sqlBuilder.endWithAndOr()) sqlBuilder.queryingFieldBuilder.append(SqlConstants.AND);
+        sqlBuilder.queryingFieldBuilder.append(SqlConstants.FLOAT_POINT).append(field).append(SqlConstants.FLOAT_POINT)
+                .append(SqlConstants.SPACE).append(SqlConstants.GREATER_THAN_AND_EQUAL).append(SqlConstants.SPACE)
+                .append(SqlConstants.HASH).append(SqlConstants.LEFT_BRACE).append(fieldValue).append(SqlConstants.RIGHT_BRACE)
+                .append(SqlConstants.COMMA);
+        return this;
     }
 
     @Override
     public AutoSqlInterface and() {
-        return null;
+        sqlBuilder.queryingFieldBuilder.append(SqlConstants.AND);
+        sqlBuilder.insertFieldBuilder.append(SqlConstants.AND);
+        sqlBuilder.updateFieldBuilder.append(SqlConstants.AND);
+        return this;
     }
 
     @Override
     public AutoSqlInterface or() {
-        return null;
+        sqlBuilder.queryingFieldBuilder.append(SqlConstants.OR);
+        sqlBuilder.insertFieldBuilder.append(SqlConstants.OR);
+        sqlBuilder.updateFieldBuilder.append(SqlConstants.OR);
+        return this;
     }
 
     @Override
     public AutoSqlInterface leftParentheses() {
-        return null;
+        sqlBuilder.queryingFieldBuilder.append(SqlConstants.LEFT_PARENTHESES);
+        sqlBuilder.insertFieldBuilder.append(SqlConstants.LEFT_PARENTHESES);
+        sqlBuilder.updateFieldBuilder.append(SqlConstants.LEFT_PARENTHESES);
+        return this;
     }
 
     @Override
     public AutoSqlInterface rightParentheses() {
-        return null;
+        sqlBuilder.queryingFieldBuilder.append(SqlConstants.RIGHT_PARENTHESES);
+        sqlBuilder.insertFieldBuilder.append(SqlConstants.RIGHT_PARENTHESES);
+        sqlBuilder.updateFieldBuilder.append(SqlConstants.RIGHT_PARENTHESES);
+        return this;
     }
 
     @Override
     public AutoSqlInterface orderBy(String orderRule) {
-        return null;
+        sqlBuilder.orderBuilder.append(orderRule);
+        return this;
     }
 
     @Override
     public AutoSqlInterface groupBy(String groupRule) {
-        return null;
+        sqlBuilder.groupBuilder.append(groupRule);
+        return this;
+    }
+
+    @Override
+    public AutoSqlInterface limit(Integer size) {
+        size = null == size ? MathConstants.TEN : size;
+        sqlBuilder.limitBuilder.append(SqlConstants.LIMIT).append(SqlConstants.SPACE)
+                .append(MathConstants.ZERO).append(SqlConstants.COMMA).append(SqlConstants.SPACE).append(size);
+        return this;
     }
 
     @Override
     public AutoSqlInterface limit(Integer startRow, Integer size) {
-        return null;
+        startRow = null == startRow ? 0 : startRow;
+        size = null == size ? MathConstants.TEN : size;
+        sqlBuilder.limitBuilder.append(SqlConstants.LIMIT).append(SqlConstants.SPACE)
+                .append(startRow).append(SqlConstants.COMMA).append(SqlConstants.SPACE).append(size);
+        return this;
     }
 
     @Override
-    public E selectObject() {
+    public E forObject() {
         List<Map<String, Object>> result = sqlExecuteInterface.search(getSql().toString());
         if (NormHandleUtil.isEmpty(result)) {
             return null;
         }
-        if(result.size() > MathConstants.ONE){
+        if (result.size() > MathConstants.ONE) {
             throw new TooManyResultsException("search for one result but found" + result.size());
         }
         return resultHandlerInterface.forObject(this.resultClass, result);
     }
 
     @Override
-    public List<E> selectList() {
+    public List<E> forList() {
         List<Map<String, Object>> result = sqlExecuteInterface.search(getSql().toString());
         if (NormHandleUtil.isEmpty(result)) {
             return new LinkedList<>();
@@ -151,22 +232,22 @@ public class DatabaseOperator<T, E> implements AutoSqlInterface<E> {
     }
 
     @Override
-    public E insertObject(E data) {
+    public T insert(T data) {
         return null;
     }
 
     @Override
-    public E insertBatch(List<E> dataList) {
+    public T insertBatch(List<T> dataList) {
         return null;
     }
 
     @Override
-    public E updateObject(E data) {
+    public T update(T data) {
         return null;
     }
 
     @Override
-    public void deleteObject() {
+    public void delete() {
 
     }
 }

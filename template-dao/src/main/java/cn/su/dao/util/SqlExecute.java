@@ -1,7 +1,7 @@
 package cn.su.dao.util;
 
 import cn.su.core.util.SpringContextUtil;
-import cn.su.dao.mapper.common.SqlCommonMapper;
+import cn.su.dao.mapper.common.SimpleSqlAutomationMapper;
 
 import java.util.List;
 import java.util.Map;
@@ -12,15 +12,20 @@ import java.util.Map;
  * @DESCRIPTION: 执行sql语句
  */
 public class SqlExecute<T> implements SqlExecuteInterface<T> {
-    private static final SqlCommonMapper commonMapper = SpringContextUtil.getBean(SqlCommonMapper.class);
+    private static final SimpleSqlAutomationMapper mapper = SpringContextUtil.getBean(SimpleSqlAutomationMapper.class);
 
     @Override
-    public List<Map<String, Object>> search(String sqlValue) {
-        return commonMapper.search(sqlValue);
+    public List<Map<String, Object>> query(Map<String, Object> param) {
+        return null;
     }
 
     @Override
-    public void insert(T data) {
+    public void insert(Map<String, Object> param) {
+
+    }
+
+    @Override
+    public void insertByObject(T data) {
 
     }
 

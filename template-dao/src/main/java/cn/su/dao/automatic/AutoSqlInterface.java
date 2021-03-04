@@ -8,11 +8,11 @@ import java.util.Map;
  * @DATE: Create In 11:53 2021/2/14 0014
  * @DESCRIPTION: 自动化sql拼写接口
  */
-public interface AutoSqlInterface<T> {
-    void fieldToQuerying(String fields);
-    void fieldToQuerying(List<String> fields);
-    void fieldToQuerying(Map<String, String> fieldMap);
-    void condition(String conditions);
+public interface AutoSqlInterface<T, E> {
+    AutoSqlInterface fieldToQuerying(String fields);
+    AutoSqlInterface fieldToQuerying(List<String> fields);
+    AutoSqlInterface fieldToQuerying(Map<String, String> fieldMap);
+    AutoSqlInterface condition(String conditions);
     AutoSqlInterface eq(String field, Object value);
     AutoSqlInterface neq(String field, Object value);
     AutoSqlInterface lt(String field, Object value);
@@ -25,11 +25,12 @@ public interface AutoSqlInterface<T> {
     AutoSqlInterface rightParentheses();
     AutoSqlInterface orderBy(String orderRule);
     AutoSqlInterface groupBy(String groupRule);
+    AutoSqlInterface limit(Integer size);
     AutoSqlInterface limit(Integer startRow, Integer size);
-    T selectObject();
-    List<T> selectList();
-    T insertObject(T data);
+    E forObject();
+    List<E> forList();
+    T insert(T data);
     T insertBatch(List<T> dataList);
-    T updateObject(T data);
-    void deleteObject();
+    T update(T data);
+    void delete();
 }

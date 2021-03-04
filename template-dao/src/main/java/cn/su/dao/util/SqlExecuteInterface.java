@@ -1,7 +1,5 @@
 package cn.su.dao.util;
 
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
 import java.util.Map;
 
@@ -11,8 +9,9 @@ import java.util.Map;
  * @DESCRIPTION: 执行接口
  */
 public interface SqlExecuteInterface<T> {
-    List<Map<String, Object>> search(@Param("sqlValue") String sqlValue);
-    void insert(T data);
+    List<Map<String, Object>> query(Map<String, Object> param);
+    void insert(Map<String, Object> param);
+    void insertByObject(T data);
     void insertBatch(List<T> dataList);
     void update(T data);
     void delete();
