@@ -16,7 +16,7 @@ public class SqlExecute<T> implements SqlExecuteInterface<T> {
 
     @Override
     public List<Map<String, Object>> query(Map<String, Object> param) {
-        return null;
+        return mapper.query(param);
     }
 
     @Override

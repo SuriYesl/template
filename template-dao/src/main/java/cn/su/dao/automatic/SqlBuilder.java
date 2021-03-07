@@ -15,9 +15,12 @@ import java.util.Map;
 public class SqlBuilder {
     public String tableName;
     public String sql;
+    public Integer type;
+    public StringBuilder sqlBuilder;
     public StringBuilder queryingFieldBuilder;
     public StringBuilder insertFieldBuilder;
     public StringBuilder updateFieldBuilder;
+    public StringBuilder deleteFieldBuilder;
     public StringBuilder whereBuilder;
     public StringBuilder orderBuilder;
     public StringBuilder groupBuilder;
@@ -28,9 +31,12 @@ public class SqlBuilder {
     private void defaultInit() {
         tableName = "";
         sql = "";
+        type = 0;
+        sqlBuilder = new StringBuilder();
         queryingFieldBuilder = new StringBuilder();
         insertFieldBuilder = new StringBuilder();
         updateFieldBuilder = new StringBuilder();
+        deleteFieldBuilder = new StringBuilder();
         whereBuilder = new StringBuilder();
         orderBuilder = new StringBuilder();
         groupBuilder = new StringBuilder();
@@ -73,5 +79,29 @@ public class SqlBuilder {
         filedCountMap.put(field, count);
         filedAndValueMap.put(fieldValue, value);
         return fieldValue;
+    }
+
+    private void handleStringBuilder() {
+
+    }
+
+    public String buildSql(StringBuilder stringBuilder) {
+        switch (type) {
+            case 0 :
+                sqlBuilder.append("SELECT ");
+                break;
+            case 1 :
+                sqlBuilder.append("INSERT ");
+                break;
+            case 2 :
+                sqlBuilder.append("UPDATE ");
+                break;
+            case 3 :
+                sqlBuilder.append("DELETE ");
+                break;
+        }
+
+
+        return sql;
     }
 }

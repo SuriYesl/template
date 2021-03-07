@@ -5,7 +5,7 @@ package cn.su.dao.automatic;
  * @DATE: Create In 23:18 2021/3/4 0004
  * @DESCRIPTION: mybatis简易sql自动化拼写
  */
-public class SimpleSqlAutomationHelper<T, E> implements SimpleSqlAutomation<T, E>{
+public class SimpleSqlAutomationUtil<T, E> implements SimpleSqlAutomation<T, E>{
     @Override
     public AutoSqlInterface<T, E> select(Class resultClass) {
         DatabaseOperator<T, E> databaseOperator = new DatabaseOperator<>(resultClass);
