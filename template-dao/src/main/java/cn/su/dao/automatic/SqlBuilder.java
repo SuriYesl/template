@@ -3,6 +3,7 @@ package cn.su.dao.automatic;
 import cn.su.core.constants.MathConstants;
 import cn.su.core.constants.SqlConstants;
 import cn.su.core.exception.BusinessException;
+import cn.su.core.util.NormHandleUtil;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -81,27 +82,61 @@ public class SqlBuilder {
         return fieldValue;
     }
 
-    private void handleStringBuilder() {
+    private String simpleHandle(StringBuilder stringBuilder) {
+        if (stringBuilder.toString().trim().endsWith(",")) {
+            stringBuilder.delete(stringBuilder.lastIndexOf(","), stringBuilder.length());
+        }
+        return stringBuilder.toString();
+    }
 
+    private String whereCondition() {
+        if (NormHandleUtil.isEmpty(whereBuilder.toString())) return "";
+        String withoutWhere = whereBuilder.toString().replace(SqlConstants.WHERE, "").trim();
+        if (withoutWhere.startsWith(SqlConstants.AND)) withoutWhere = withoutWhere.substring(3).trim();
+        if (withoutWhere.startsWith(SqlConstants.OR)) withoutWhere = withoutWhere.substring(2).trim();
+        if (withoutWhere.endsWith(SqlConstants.COMMA)) withoutWhere = withoutWhere.substring(0, withoutWhere.lastIndexOf(",")).trim();
+        return SqlConstants.WHERE + SqlConstants.SPACE + withoutWhere + SqlConstants.SPACE;
+    }
+
+    private String groupByCondition() {
+        if (NormHandleUtil.isEmpty(groupBuilder.toString())) return "";
+        return groupBuilder.toString() + SqlConstants.SPACE;
+    }
+
+    private String limitCondition() {
+        if (NormHandleUtil.isEmpty(limitBuilder.toString())) return "";
+        return limitBuilder.toString() + SqlConstants.SPACE;
+    }
+
+    private String orderCondition() {
+        if (NormHandleUtil.isEmpty(orderBuilder.toString())) return "";
+        return orderBuilder.toString() + SqlConstants.SPACE;
     }
 
     public String buildSql(StringBuilder stringBuilder) {
         switch (type) {
             case 0 :
-                sqlBuilder.append("SELECT ");
+                sqlBuilder.append(SqlConstants.SELECT).append(SqlConstants.SPACE);
                 break;
             case 1 :
-                sqlBuilder.append("INSERT ");
+                sqlBuilder.append(SqlConstants.INSERT).append(SqlConstants.SPACE);
                 break;
             case 2 :
-                sqlBuilder.append("UPDATE ");
+                sqlBuilder.append(SqlConstants.UPDATE).append(SqlConstants.SPACE);
                 break;
             case 3 :
-                sqlBuilder.append("DELETE ");
+                sqlBuilder.append(SqlConstants.DELETE).append(SqlConstants.SPACE);
                 break;
         }
 
-
+        sqlBuilder.append(simpleHandle(stringBuilder));
+        sqlBuilder.append(SqlConstants.SPACE).append(SqlConstants.FROM).append(SqlConstants.SPACE).append(tableName).append(SqlConstants.SPACE);
+        sqlBuilder.append(whereCondition());
+        sqlBuilder.append(groupByCondition());
+        sqlBuilder.append(limitCondition());
+        sqlBuilder.append(orderCondition());
+        sql = sqlBuilder.toString();
+        System.out.println(sql);
         return sql;
     }
 }

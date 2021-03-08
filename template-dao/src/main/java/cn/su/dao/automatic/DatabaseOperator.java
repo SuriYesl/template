@@ -228,23 +228,22 @@ public class DatabaseOperator<T, E> implements AutoSqlInterface<T, E> {
     }
 
     private String completeSql() {
-        StringBuilder sql = new StringBuilder();
-        //switch ()
-        return null;
+        return sqlBuilder.buildSql(fieldBuilder);
     }
 
     @Override
     public E forObject() {
-        //Map<String, Object> params = new LinkedHashMap<>();
-        //List<Map<String, Object>> result = sqlExecuteInterface.query(getSql().toString());
-        //if (NormHandleUtil.isEmpty(result)) {
-        //    return null;
-        //}
-        //if (result.size() > MathConstants.ONE) {
-        //    throw new TooManyResultsException("search for one result but found" + result.size());
-        //}
-        //return resultHandlerInterface.forObject(this.resultClass, result);
-        return null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put("value", completeSql());
+        params.putAll(sqlBuilder.filedAndValueMap);
+        List<Map<String, Object>> result = sqlExecuteInterface.query(params);
+        if (NormHandleUtil.isEmpty(result)) {
+            return null;
+        }
+        if (result.size() > MathConstants.ONE) {
+            throw new TooManyResultsException("search for one result but found" + result.size());
+        }
+        return resultHandlerInterface.forObject(this.resultClass, result);
     }
 
     @Override

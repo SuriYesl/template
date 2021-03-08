@@ -9,6 +9,9 @@ public class SqlConstants {
     public static final String SERIAL_VERSION_UID = "serialVersionUID";
     public static final String TB = "tb";
     public static final String SELECT = "SELECT";
+    public static final String INSERT = "INSERT";
+    public static final String UPDATE = "UPDATE";
+    public static final String DELETE = "DELETE";
     public static final String FROM = "FROM";
     public static final String WHERE = "WHERE";
     public static final String AND = "AND";

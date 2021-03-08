@@ -77,4 +77,9 @@ public class StringUtil {
         string = string.substring(MathConstants.ONE, string.length() - MathConstants.ONE);
         return string;
     }
+
+    public static boolean startOrEndWithMatchStringWithoutSpace(String string, String matchString) {
+        string = string.trim();
+        return string.startsWith(matchString) || string.endsWith(matchString);
+    }
 }
