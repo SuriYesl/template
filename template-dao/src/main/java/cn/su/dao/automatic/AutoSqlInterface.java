@@ -30,6 +30,7 @@ public interface AutoSqlInterface<T, E> {
     AutoSqlInterface limit(Integer startRow, Integer size);
     E forObject();
     List<E> forList();
+    T insert();
     T insert(T data);
     T insertBatch(List<T> dataList);
     T update(T data);

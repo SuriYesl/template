@@ -30,12 +30,36 @@ public class DatabaseOperator<T, E> implements AutoSqlInterface<T, E> {
     private final ResultHandlerInterface<E> resultHandlerInterface;
     private boolean humpToLine;
 
+    public void setTableName(String tableName) {
+        sqlBuilder.tableName = tableName;
+    }
+
     public String getSql() {
         return sqlBuilder.sql;
     }
 
+    public DatabaseOperator() {
+        this(null, Integer.class, null, null);
+    }
+
+    public DatabaseOperator(String tableName) {
+        this(null, Integer.class, tableName, null);
+    }
+
+    public DatabaseOperator(Integer type) {
+        this(null, Integer.class, null, type);
+    }
+
     public DatabaseOperator(Class resultClass) {
         this(null, resultClass, SqlBuildHelper.getClassTableName(resultClass), null);
+    }
+
+    public DatabaseOperator(T parameterObject, Class resultClass, Integer type) {
+        this(parameterObject, resultClass, SqlBuildHelper.getClassTableName(resultClass), type);
+    }
+
+    public DatabaseOperator(T parameterObject, String tableName, Integer type) {
+        this(parameterObject, Integer.class, tableName, type);
     }
 
     public DatabaseOperator(T parameterObject, Class resultClass) {
@@ -240,13 +264,17 @@ public class DatabaseOperator<T, E> implements AutoSqlInterface<T, E> {
         return sqlBuilder.buildSql(fieldBuilder);
     }
 
-    @Override
-    public E forObject() {
+    private List<Map<String, Object>> sqlExecuteResult() {
         if (NormHandleUtil.isEmpty(fieldBuilder.toString())) fieldToQuerying();
         Map<String, Object> params = new LinkedHashMap<>();
         params.put("value", completeSql());
         params.putAll(sqlBuilder.filedAndValueMap);
-        List<Map<String, Object>> result = sqlExecuteInterface.query(params);
+        return sqlExecuteInterface.query(params);
+    }
+
+    @Override
+    public E forObject() {
+        List<Map<String, Object>> result = sqlExecuteResult();
         if (NormHandleUtil.isEmpty(result)) {
             return null;
         }
@@ -258,15 +286,16 @@ public class DatabaseOperator<T, E> implements AutoSqlInterface<T, E> {
 
     @Override
     public List<E> forList() {
-        if (NormHandleUtil.isEmpty(fieldBuilder.toString())) fieldToQuerying();
-        Map<String, Object> params = new LinkedHashMap<>();
-        params.put("value", completeSql());
-        params.putAll(sqlBuilder.filedAndValueMap);
-        List<Map<String, Object>> result = sqlExecuteInterface.query(params);
+        List<Map<String, Object>> result = sqlExecuteResult();
         if (NormHandleUtil.isEmpty(result)) {
             return new LinkedList<>();
         }
         return resultHandlerInterface.forList(this.resultClass, result);
+    }
+
+    @Override
+    public T insert() {
+        return null;
     }
 
     @Override

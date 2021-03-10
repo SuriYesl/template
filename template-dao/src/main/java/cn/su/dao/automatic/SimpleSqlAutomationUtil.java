@@ -13,20 +13,33 @@ public class SimpleSqlAutomationUtil<T, E> implements SimpleSqlAutomation<T, E>{
     }
 
     @Override
-    public AutoSqlInterface<T, E> select(T paramObject, Class resultClass) {
-        DatabaseOperator<T, E> databaseOperator = new DatabaseOperator<>(paramObject, resultClass);
+    public AutoSqlInterface<T, E> select(T parameterObject, Class resultClass) {
+        DatabaseOperator<T, E> databaseOperator = new DatabaseOperator<>(parameterObject, resultClass);
         return databaseOperator;
     }
 
     @Override
-    public AutoSqlInterface<T, E> select(T paramObject, Class resultClass, String tableName) {
-        DatabaseOperator<T, E> databaseOperator = new DatabaseOperator<>(paramObject, resultClass, tableName);
+    public AutoSqlInterface<T, E> select(T parameterObject, Class resultClass, String tableName) {
+        DatabaseOperator<T, E> databaseOperator = new DatabaseOperator<>(parameterObject, resultClass, tableName);
         return databaseOperator;
     }
 
     @Override
-    public AutoSqlInterface<T, E> insert() {
-        return null;
+    public AutoSqlInterface<T, E> insert(T parameterObject, String tableName) {
+        DatabaseOperator<T, E> databaseOperator = new DatabaseOperator<>(parameterObject, tableName, 1);
+        return databaseOperator;
+    }
+
+    @Override
+    public AutoSqlInterface<T, E> insert(T parameterObject, Class<E> resultClass) {
+        DatabaseOperator<T, E> databaseOperator = new DatabaseOperator<>(parameterObject, resultClass, 1);
+        return databaseOperator;
+    }
+
+    @Override
+    public AutoSqlInterface<T, E> insert(T parameterObject, Class<E> resultClass, String tableName) {
+        DatabaseOperator<T, E> databaseOperator = new DatabaseOperator<>(parameterObject, resultClass, tableName, 1);
+        return databaseOperator;
     }
 
     @Override
