@@ -3,11 +3,7 @@
 <mapper namespace="cn.su.dao.mapper.common.SqlCommonMapper">
 
 	<select id="search" parameterType="String" resultType="java.util.LinkedHashMap">
-		${value}
-	</select>
-
-	<select id="superCommonQuery" parameterType="String" resultType="java.util.LinkedHashMap">
-		${value}
+		${sqlString}
 	</select>
 
 	<insert id="superCommonInsert" parameterType="java.util.LinkedHashMap">
@@ -26,8 +22,4 @@
 			(${fieldValues})
 		</foreach>
 	</insert>
-
-	<select id="getTargetBySql" parameterType="String" resultType="java.util.LinkedHashMap">
-		${sqlValue}
-	</select>
 </mapper>

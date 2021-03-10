@@ -1,27 +1,17 @@
 package cn.su.dao.model.login;
 
-import cn.su.dao.model.common.BaseVo;
-
 /**
  * @Author: su rui
- * @Date: 2021/2/7 15:05
- * @Description: 登录结果
+ * @Date: 2021/2/7 15:06
+ * @Description: 放入缓存的登录信息
  */
-public class LoginResultVo extends BaseVo {
-    private static final long serialVersionUID = 3246802561635027293L;
+public class LoginInfoToRedis {
     private String uuid;
     private String accountName;
+    private String accountPassword;
     private String phone;
     private String email;
     private String token;
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 
     public String getUuid() {
         return uuid;
@@ -39,6 +29,14 @@ public class LoginResultVo extends BaseVo {
         this.accountName = accountName;
     }
 
+    public String getAccountPassword() {
+        return accountPassword;
+    }
+
+    public void setAccountPassword(String accountPassword) {
+        this.accountPassword = accountPassword;
+    }
+
     public String getPhone() {
         return phone;
     }
@@ -53,5 +51,13 @@ public class LoginResultVo extends BaseVo {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

@@ -1,5 +1,7 @@
 package cn.su.core.exception;
 
+import cn.su.core.constants.ResponseCodeEnum;
+
 /**
  * @Author: su rui
  * @Date: 2021/1/19 11:55
@@ -28,6 +30,13 @@ public class BusinessException extends BaseException {
 
     public BusinessException() {
         super();
+    }
+
+    public BusinessException(ResponseCodeEnum responseCodeEnum) {
+        if (responseCodeEnum != null) {
+            this.code = responseCodeEnum.getCode();
+            this.message = responseCodeEnum.getMessage();
+        }
     }
 
     public BusinessException(Throwable cause) {

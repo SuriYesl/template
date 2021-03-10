@@ -1,5 +1,6 @@
 package cn.su.config.database;
 
+import cn.su.dao.typehandler.DateTimeTypeHandler;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -42,6 +43,7 @@ public class PrimaryDataBase {
             throws Exception
     {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
+        bean.setTypeHandlers(new DateTimeTypeHandler());
         bean.setDataSource(datasource);
         bean.setMapperLocations(
                 // 设置mybatis的xml所在位置

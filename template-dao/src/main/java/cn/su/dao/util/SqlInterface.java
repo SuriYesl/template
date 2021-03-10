@@ -1,7 +1,7 @@
 package cn.su.dao.util;
 
 
-import cn.su.dao.entity.BaseBo;
+import cn.su.dao.entity.common.BaseBo;
 
 import java.util.List;
 

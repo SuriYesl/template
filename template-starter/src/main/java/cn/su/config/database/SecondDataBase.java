@@ -1,5 +1,6 @@
 package cn.su.config.database;
 
+import cn.su.dao.typehandler.DateTimeTypeHandler;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -33,6 +34,7 @@ public class SecondDataBase {
             throws Exception
     {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
+        bean.setTypeHandlers(new DateTimeTypeHandler());
         bean.setDataSource(datasource);
         bean.setMapperLocations(
                 new PathMatchingResourcePatternResolver().getResources("classpath*:**/mappers/**/*Mapper.xml"));

@@ -1,4 +1,4 @@
-package cn.su.dao.entity;
+package cn.su.dao.entity.common;
 
 import cn.su.dao.util.SqlHelper;
 import org.apache.poi.ss.formula.functions.T;
