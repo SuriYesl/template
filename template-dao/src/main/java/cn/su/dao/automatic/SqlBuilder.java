@@ -4,9 +4,12 @@ import cn.su.core.constants.MathConstants;
 import cn.su.core.constants.SqlConstants;
 import cn.su.core.exception.BusinessException;
 import cn.su.core.util.NormHandleUtil;
+import cn.su.core.util.StringUtil;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @AUTHOR: sr
@@ -138,5 +141,15 @@ public class SqlBuilder {
         sql = sqlBuilder.toString();
         System.out.println(sql);
         return sql;
+    }
+
+    public Map<String, String> getFieldMap(Class<?> clazz, boolean humpToLine) {
+        List<String> fieldStrings = SqlBuildHelper.getClassFields(clazz);
+        if (NormHandleUtil.isEmpty(fieldStrings)) {
+            throw new BusinessException("value for selecting is empty");
+        }
+        return fieldStrings.parallelStream()
+                .collect(Collectors.toMap(fieldString -> fieldString,
+                        fieldString -> humpToLine ? StringUtil.humpToLine(fieldString) : fieldString));
     }
 }

@@ -9,6 +9,7 @@ import java.util.Map;
  * @DESCRIPTION: 自动化sql拼写接口
  */
 public interface AutoSqlInterface<T, E> {
+    AutoSqlInterface fieldToQuerying();
     AutoSqlInterface fieldToQuerying(String fields);
     AutoSqlInterface fieldToQuerying(List<String> fields);
     AutoSqlInterface fieldToQuerying(Map<String, String> fieldMap);
