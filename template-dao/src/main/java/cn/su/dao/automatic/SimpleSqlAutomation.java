@@ -6,9 +6,7 @@ package cn.su.dao.automatic;
  * @DESCRIPTION: 简易sql自动化拼写
  */
 public interface SimpleSqlAutomation<T, E> {
-    AutoSqlInterface<T, E> select(Class resultClass);
-    AutoSqlInterface<T, E> select(T parameterObject, Class resultClass);
-    AutoSqlInterface<T, E> select(T parameterObject, Class resultClass, String tableName);
+    AutoSqlInterface<T, E> select(Class<E> resultClass, String tableName);
     AutoSqlInterface<T, E> insert(T parameterObject, String tableName);
     AutoSqlInterface<T, E> insert(T parameterObject, Class<E> resultClass);
     AutoSqlInterface<T, E> insert(T parameterObject, Class<E> resultClass, String tableName);

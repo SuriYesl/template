@@ -50,6 +50,10 @@ public class DatabaseOperator<T, E> implements AutoSqlInterface<T, E> {
         this(null, Integer.class, null, type);
     }
 
+    public DatabaseOperator(T parameterObject) {
+        this(parameterObject, Integer.class, null, 1);
+    }
+
     public DatabaseOperator(Class resultClass) {
         this(null, resultClass, SqlBuildHelper.getClassTableName(resultClass), null);
     }
@@ -264,7 +268,7 @@ public class DatabaseOperator<T, E> implements AutoSqlInterface<T, E> {
         return sqlBuilder.buildSql(fieldBuilder);
     }
 
-    private List<Map<String, Object>> sqlExecuteResult() {
+    private List<Map<String, Object>> sqlSearchExecuteResult() {
         if (NormHandleUtil.isEmpty(fieldBuilder.toString())) fieldToQuerying();
         Map<String, Object> params = new LinkedHashMap<>();
         params.put("value", completeSql());
@@ -274,7 +278,7 @@ public class DatabaseOperator<T, E> implements AutoSqlInterface<T, E> {
 
     @Override
     public E forObject() {
-        List<Map<String, Object>> result = sqlExecuteResult();
+        List<Map<String, Object>> result = sqlSearchExecuteResult();
         if (NormHandleUtil.isEmpty(result)) {
             return null;
         }
@@ -286,7 +290,7 @@ public class DatabaseOperator<T, E> implements AutoSqlInterface<T, E> {
 
     @Override
     public List<E> forList() {
-        List<Map<String, Object>> result = sqlExecuteResult();
+        List<Map<String, Object>> result = sqlSearchExecuteResult();
         if (NormHandleUtil.isEmpty(result)) {
             return new LinkedList<>();
         }
@@ -295,6 +299,7 @@ public class DatabaseOperator<T, E> implements AutoSqlInterface<T, E> {
 
     @Override
     public T insert() {
+
         return null;
     }
 

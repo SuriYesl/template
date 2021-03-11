@@ -26,7 +26,10 @@ public class SqlConstants {
     public static final String LEFT_JOIN = "LEFT JOIN";
     public static final String BETWEEN = "BETWEEN";
     public static final String EQUAL = "EQUAL";
-
+    public static final String INTO = "INTO";
+    public static final String VALUES = "VALUES";
+    public static final String FOREACH_START = "<foreach collection=\"list\" item=\"item\" separator=\",\">";
+    public static final String FOREACH_END = "</foreach>";
     public static final String ITEM_POINT = "item.";
     public static final String GREATER_THAN = "&gt;";
     public static final String LESS_THAN = "&lt;";

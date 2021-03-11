@@ -116,13 +116,34 @@ public class SqlBuilder {
         return orderBuilder.toString() + SqlConstants.SPACE;
     }
 
+    private String insertValue() {
+        StringBuilder insertValueBuilder = new StringBuilder();
+        for (Map.Entry<String, Object> map : filedAndValueMap.entrySet()) {
+            insertValueBuilder.append(SqlConstants.HASH).append(SqlConstants.LEFT_BRACE).append(map.getKey())
+                    .append(SqlConstants.RIGHT_BRACE).append(SqlConstants.COMMA);
+        }
+        insertValueBuilder.delete(insertValueBuilder.length() - 1, insertValueBuilder.length());
+        return insertValueBuilder.toString();
+    }
+
     public String buildSql(StringBuilder stringBuilder) {
         switch (type) {
             case 0 :
                 sqlBuilder.append(SqlConstants.SELECT).append(SqlConstants.SPACE);
+                sqlBuilder.append(simpleHandle(stringBuilder));
+                sqlBuilder.append(SqlConstants.SPACE).append(SqlConstants.FROM).append(SqlConstants.SPACE).append(tableName).append(SqlConstants.SPACE);
+                sqlBuilder.append(whereCondition());
+                sqlBuilder.append(groupByCondition());
+                sqlBuilder.append(limitCondition());
+                sqlBuilder.append(orderCondition());
                 break;
             case 1 :
-                sqlBuilder.append(SqlConstants.INSERT).append(SqlConstants.SPACE);
+                sqlBuilder.append(SqlConstants.INSERT).append(SqlConstants.SPACE).append(SqlConstants.INTO)
+                        .append(SqlConstants.SPACE).append(tableName).append(SqlConstants.SPACE).append(SqlConstants.LEFT_PARENTHESES);
+                sqlBuilder.append(simpleHandle(stringBuilder)).append(SqlConstants.RIGHT_PARENTHESES).append(SqlConstants.SPACE);
+                sqlBuilder.append(SqlConstants.VALUES).append(SqlConstants.SPACE).append(SqlConstants.FOREACH_START).append(SqlConstants.SPACE);
+                sqlBuilder.append(SqlConstants.LEFT_PARENTHESES).append(insertValue()).append(SqlConstants.RIGHT_PARENTHESES).append(SqlConstants.SPACE);
+                sqlBuilder.append(SqlConstants.FOREACH_END).append(SqlConstants.SPACE);
                 break;
             case 2 :
                 sqlBuilder.append(SqlConstants.UPDATE).append(SqlConstants.SPACE);
@@ -132,12 +153,6 @@ public class SqlBuilder {
                 break;
         }
 
-        sqlBuilder.append(simpleHandle(stringBuilder));
-        sqlBuilder.append(SqlConstants.SPACE).append(SqlConstants.FROM).append(SqlConstants.SPACE).append(tableName).append(SqlConstants.SPACE);
-        sqlBuilder.append(whereCondition());
-        sqlBuilder.append(groupByCondition());
-        sqlBuilder.append(limitCondition());
-        sqlBuilder.append(orderCondition());
         sql = sqlBuilder.toString();
         System.out.println(sql);
         return sql;

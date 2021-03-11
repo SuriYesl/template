@@ -27,9 +27,9 @@ public class TestController {
         System.out.println("这里是GET请求");
         //testService.searchTest();
         SimpleSqlAutomationUtil simpleSqlAutomationUtil = new SimpleSqlAutomationUtil();
-        List<TestModel> tests = simpleSqlAutomationUtil.select(TestModel.class).eq("name", "李四").forList();
-        for (TestModel testModel : tests) {
-            System.out.println(testModel.toString());
-        }
+        //List<TestModel> tests = simpleSqlAutomationUtil.select(TestModel.class).eq("name", "李四").forList();
+        //for (TestModel testModel : tests) {
+        //    System.out.println(testModel.toString());
+        //}
     }
 }

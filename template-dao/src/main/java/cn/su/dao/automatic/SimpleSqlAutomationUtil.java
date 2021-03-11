@@ -7,20 +7,8 @@ package cn.su.dao.automatic;
  */
 public class SimpleSqlAutomationUtil<T, E> implements SimpleSqlAutomation<T, E>{
     @Override
-    public AutoSqlInterface<T, E> select(Class resultClass) {
-        DatabaseOperator<T, E> databaseOperator = new DatabaseOperator<>(resultClass);
-        return databaseOperator;
-    }
-
-    @Override
-    public AutoSqlInterface<T, E> select(T parameterObject, Class resultClass) {
-        DatabaseOperator<T, E> databaseOperator = new DatabaseOperator<>(parameterObject, resultClass);
-        return databaseOperator;
-    }
-
-    @Override
-    public AutoSqlInterface<T, E> select(T parameterObject, Class resultClass, String tableName) {
-        DatabaseOperator<T, E> databaseOperator = new DatabaseOperator<>(parameterObject, resultClass, tableName);
+    public AutoSqlInterface<T, E> select(Class<E> resultClass, String tableName) {
+        DatabaseOperator<T, E> databaseOperator = new DatabaseOperator<>(null, resultClass, tableName);
         return databaseOperator;
     }
 
