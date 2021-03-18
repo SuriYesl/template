@@ -1,9 +1,7 @@
-package cn.su.dao.util;
+package cn.su.dao.link;
 
 import cn.su.core.constants.MathConstants;
-import cn.su.core.constants.SqlConstants;
 import cn.su.core.util.NormHandleUtil;
-import cn.su.core.util.StringUtil;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -17,12 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @DESCRIPTION: sql语句构建辅助类
  */
 public class SqlBuildHelper {
-    public static final Map<String, List<String>> classFieldStrMap = new ConcurrentHashMap<>();
-    public static final Map<String, Field[]> classFieldMap = new ConcurrentHashMap<>();
-
-    public static String getClassTableName(Class clazz) {
-        return SqlConstants.TB + StringUtil.humpToLine(clazz.getSimpleName());
-    }
+    public static Map<String, List<String>> classFieldStrMap = new ConcurrentHashMap<>();
+    public static Map<String, Field[]> classFieldMap = new ConcurrentHashMap<>();
 
     public static Field[] getClassFieldArray(Class clazz) {
         if (classFieldMap.containsKey(clazz.getName()) && !NormHandleUtil.isEmpty(classFieldMap.get(clazz.getName()))) {
@@ -54,27 +48,11 @@ public class SqlBuildHelper {
             fieldStr.add(field.getName());
         }
         classFieldStrMap.put(clazz.getName(), fieldStr);
-        System.out.println("no cache for this class fields: " + clazz.getName());
         return fieldStr;
     }
 
-    public static String getSearchSql(String tableName, Map<String, String> fieldMap, Map<String, Object> condition) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(SqlConstants.SELECT).append(SqlConstants.SPACE);
-        for (Map.Entry<String, String> field : fieldMap.entrySet()) {
-            field.setValue(NormHandleUtil.isEmpty(field.getValue()) ? field.getKey() : field.getValue());
-            stringBuilder.append(field.getValue())
-                    .append(SqlConstants.SPACE)
-                    .append(SqlConstants.AS)
-                    .append(SqlConstants.SPACE)
-                    .append(field.getKey())
-                    .append(SqlConstants.COMMA);
-        }
-        stringBuilder.deleteCharAt(stringBuilder.length() - MathConstants.ONE);
-        stringBuilder.append(SqlConstants.SPACE)
-                .append(SqlConstants.FROM)
-                .append(SqlConstants.SPACE)
-                .append(tableName);
-        return stringBuilder.toString();
+    public static boolean endWithAndOr(String sql) {
+        return sql.trim().endsWith(SqlConstants.AND)
+                || sql.trim().endsWith(SqlConstants.OR);
     }
 }

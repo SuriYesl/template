@@ -1,9 +1,6 @@
 package cn.su.starter;
 
-import cn.su.core.exception.BusinessException;
 import cn.su.core.util.SystemUtil;
-import cn.su.dao.entity.common.BaseBo;
-import cn.su.dao.util.SqlSpellUtil;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ConfigurationBuilder;
@@ -12,8 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-
-import java.util.Set;
 
 /**
  * 启动之后需要执行的任务
@@ -43,16 +38,16 @@ public class AppStartRunner implements ApplicationRunner {
         Reflections reflections = new Reflections(new ConfigurationBuilder()
                 .forPackages("cn.su.dao.entity")
                 .addScanners(new SubTypesScanner()));
-        try {
-            Set<Class<? extends BaseBo>> subTypes = reflections.getSubTypesOf(BaseBo.class);
-            for (Class boClass : subTypes) {
-                SqlSpellUtil.getClassFieldArray(boClass);
-                SqlSpellUtil.getClassFields(boClass);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BusinessException(e);
-        }
+        //try {
+        //    Set<Class<? extends BaseBo>> subTypes = reflections.getSubTypesOf(BaseBo.class);
+        //    for (Class boClass : subTypes) {
+        //        SqlSpellUtil.getClassFieldArray(boClass);
+        //        SqlSpellUtil.getClassFields(boClass);
+        //    }
+        //} catch (Exception e) {
+        //    e.printStackTrace();
+        //    throw new BusinessException(e);
+        //}
         logger.info("======================cache class fields end, use time: " + (System.currentTimeMillis() - startTime) + "ms======================");
     }
 }

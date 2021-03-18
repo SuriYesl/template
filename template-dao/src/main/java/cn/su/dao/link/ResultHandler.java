@@ -1,11 +1,8 @@
-package cn.su.dao.automatic;
+package cn.su.dao.link;
 
-import cn.su.core.constants.SqlConstants;
 import cn.su.core.exception.BusinessException;
 import cn.su.core.util.NormHandleUtil;
 import cn.su.core.util.StringUtil;
-import cn.su.dao.util.ResultHandlerInterface;
-import cn.su.dao.util.SqlSpellUtil;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -17,12 +14,12 @@ import java.util.Map;
  * @DATE: Create In 20:42 2021/2/14 0014
  * @DESCRIPTION: sql结果处理
  */
-public class ResultHandler<T> implements ResultHandlerInterface<T> {
-    private T getObjectByMap(Class<?> clazz, Map<String, Object> oneResultMap) {
-        T objectBo;
+public class ResultHandler implements ResultHandlerInterface {
+    private <R> R getObjectByMap(Class<?> clazz, Map<String, Object> oneResultMap) {
+        R objectBo;
         try {
-            objectBo = (T) clazz.newInstance();
-            Field[] fields = SqlSpellUtil.getClassFieldArray(clazz);
+            objectBo = (R) clazz.newInstance();
+            Field[] fields = SqlBuildHelper.getClassFieldArray(clazz);
             for (Field field : fields) {
                 field.setAccessible(true);
                 if (!SqlConstants.SERIAL_VERSION_UID.equals(field.getName())) {
@@ -40,38 +37,23 @@ public class ResultHandler<T> implements ResultHandlerInterface<T> {
     }
 
     @Override
-    public T forObject(Class<T> clazz, List<Map<String, Object>> result) {
+    public <R> R forObject(Class<R> clazz, List<Map<String, Object>> result) {
         return getObjectByMap(clazz, result.get(0));
     }
 
     @Override
-    public List<T> forList(Class<T> clazz, List<Map<String, Object>> result) {
-        List<T> list = new LinkedList<>();
+    public <R> List<R> forList(Class<R> clazz, List<Map<String, Object>> result) {
+        List<R> list = new LinkedList<>();
         if (!NormHandleUtil.isEmpty(result)) {
             try {
                 for (Map<String, Object> map : result) {
-                    T objectBo = getObjectByMap(clazz, map);
+                    R objectBo = getObjectByMap(clazz, map);
                     list.add(objectBo);
                 }
             } catch (Exception e) {
-                throw new BusinessException("DaoHelper, method queryForList exception:", e);
+                throw new BusinessException("ResultHandler, method queryForList exception:", e);
             }
         }
         return list;
-    }
-
-    @Override
-    public void update(T data) {
-
-    }
-
-    @Override
-    public void insert(T data) {
-
-    }
-
-    @Override
-    public void insertBatch(List<T> dataList) {
-
     }
 }
