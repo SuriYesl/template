@@ -52,6 +52,11 @@ public class BusinessException extends BaseException {
         this.message = message;
     }
 
+    public BusinessException(String code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+
     public BusinessException(String code, String message, Throwable cause) {
         super(cause);
         this.code = code;

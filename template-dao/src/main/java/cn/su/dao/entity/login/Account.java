@@ -1,7 +1,5 @@
 package cn.su.dao.entity.login;
 
-import cn.su.dao.entity.common.BaseBo;
-
 import java.time.LocalDateTime;
 
 /**
@@ -9,7 +7,7 @@ import java.time.LocalDateTime;
  * @Date: 2021/2/7 14:54
  * @Description: 登录账号
  */
-public class Account extends BaseBo {
+public class Account {
     private String uuid;
     private String accountName;
     private String accountPassword;

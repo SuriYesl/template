@@ -1,4 +1,4 @@
-package cn.su.dao.util;
+package cn.su.dao.link;
 
 import cn.su.core.util.SpringContextUtil;
 import cn.su.dao.mapper.common.SimpleSqlAutomationMapper;
@@ -21,26 +21,26 @@ public class SqlExecute<T> implements SqlExecuteInterface<T> {
 
     @Override
     public void insert(Map<String, Object> param) {
-
+        mapper.insert(param);
     }
 
     @Override
-    public void insertByObject(T data) {
-
+    public Integer insertBackId(Map<String, Object> param) {
+        return mapper.insertBackId(param);
     }
 
     @Override
-    public void insertBatch(List<T> dataList) {
-
+    public void insertBatch(String halfSql, String objectField, List<T> dataList) {
+        mapper.insertBatch(halfSql, objectField, dataList);
     }
 
     @Override
-    public void update(T data) {
-
+    public void update(Map<String, Object> param) {
+        mapper.update(param);
     }
 
     @Override
-    public void delete() {
-
+    public void delete(Map<String, Object> param) {
+        mapper.delete(param);
     }
 }
